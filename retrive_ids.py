@@ -109,12 +109,12 @@ def compute_ids(event_file_path, indices_file_path, image_timestamps_file_path, 
     np.savetxt(indices_file_path, (image_index_to_window_start, image_index_to_window_end), delimiter=',')
      
 
-def process_dataset(dataset):
+def process_dataset(dataset, num_events, indices_file_name="indices.txt", timestamp_file_name="timestamps.txt"):
     for segments in tqdm.tqdm(os.scandir(dataset), ncols=50):
         segment_dir = Path(segments.path)
         event_file_path = segment_dir / Path("events.h5")
-        indices_file_path=segment_dir / Path("indices.txt")
-        image_timestamps_file_path=segment_dir / Path('timestamps.txt')
+        indices_file_path=segment_dir / Path(indices_file_name)
+        image_timestamps_file_path=segment_dir / Path(timestamp_file_name)
 
         print(f"Processing ... {event_file_path}")
         if not event_file_path.is_file():
@@ -131,7 +131,7 @@ def process_dataset(dataset):
         compute_ids(event_file_path=event_file_path, 
                     indices_file_path=indices_file_path, 
                     image_timestamps_file_path=image_timestamps_file_path, 
-                    num_events=50000
+                    num_events=num_events
                     )
 
 
@@ -139,6 +139,9 @@ def process_dataset(dataset):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", default=None, type=str, help="Current slice to process")
+    parser.add_argument("--num_events", default=50000, type=int, help="number of events before the last image")
+    parser.add_argument("--indices_file_name", default="indices.txt", type=str, help="name of the file where the indices are stored")
+    parser.add_argument("--timestamp_file_name", default="timestamps.txt", type=str, help="name of the file where the timestamps are stored")
     args=parser.parse_args()
 
-    process_dataset(dataset=args.dataset)
+    process_dataset(dataset=args.dataset, num_events=args.num_events, indices_file_name=args.indices_file_name, timestamp_file_name=args.timestamp_file_name)

@@ -1,9 +1,8 @@
 #!/bin/bash
-
 echo "____Event conversion____"
 
 export CUDA_VISIBLE_DEVICES=0
-DATAPATH="/data/storage/pellerito/TartanEventRest/oldtown"
+DATAPATH="/data/storage/pellerito/TartanEvent/gascola"
 UPSAMPLED_PATH="/data/storage/pellerito/upsampled/"
 ORIG_DIR="/image_left"
 EV_SUB_DIR="/events"
@@ -71,11 +70,11 @@ for diff in "$DATAPATH"/*/; do
 done
 
 
-# echo "-------- -------- -------- retriving ids"
-# for diff in "$DATAPATH"/*/; do
-#     cd /home/pellerito/Automatic_dataset_conversion
-#     source ~/anaconda3/etc/profile.d/conda.sh
-#     conda activate evlicious
-#     echo "-------- -------- -------- retriving ids for $diff"
-#     python retrive_ids.py --dataset=$diff
-# done
+echo "-------- -------- -------- retriving ids"
+for diff in "$DATAPATH"/*/; do
+    cd /home/pellerito/Automatic_dataset_conversion
+    source ~/anaconda3/etc/profile.d/conda.sh
+    conda activate evlicious
+    echo "-------- -------- -------- retriving ids for $diff"
+    python retrive_ids.py --dataset=$diff --num_events=50000 --timestamp_file_name=timestamps.txt
+done

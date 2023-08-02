@@ -3,7 +3,7 @@
 echo "____Upsample and generate events"
 
 export CUDA_VISIBLE_DEVICES=0
-DATAPATH="/data/storage/pellerito/TartanEventRest/seasidetown"
+DATAPATH="/data/storage/pellerito/TartanEvent/gascola"
 UPSAMPLED_PATH="/data/storage/pellerito/upsampled/"
 ORIG_DIR="/image_left"
 EV_SUB_DIR="/events"
