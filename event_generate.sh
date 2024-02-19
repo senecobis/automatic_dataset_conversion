@@ -3,7 +3,7 @@
 echo "____Upsample and generate events"
 
 export CUDA_VISIBLE_DEVICES=0
-DATAPATH="/data/storage/pellerito/TartanEvent/gascola"
+DATAPATH="/data/storage/pellerito/tartanair_test"
 UPSAMPLED_PATH="/data/storage/pellerito/upsampled/"
 ORIG_DIR="/image_left"
 EV_SUB_DIR="/events"
@@ -89,12 +89,12 @@ for diff in "$DATAPATH"/*/; do
             python esim_torch/scripts/generate_events.py --input_dir=$upsampled_destination --output_dir=$event_dir --contrast_threshold_neg=0.2 --contrast_threshold_pos=0.2 --refractory_period_ns=0
         fi
 
-        echo "-------- Removing upsampled folder"
-        if [ -d "$upsampled_destination" ]; then
-            rm -r "$upsampled_destination"
-        else
-            echo "-------- No upsampled folder to remove"
-        fi
+        # echo "-------- Removing upsampled folder"
+        # if [ -d "$upsampled_destination" ]; then
+        #     rm -r "$upsampled_destination"
+        # else
+        #     echo "-------- No upsampled folder to remove"
+        # fi
 
         echo "-------- -------- -------- Finished processing segment $seg at difficulty $diff"
     done

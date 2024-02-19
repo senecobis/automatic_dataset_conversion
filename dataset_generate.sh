@@ -39,7 +39,7 @@ for diff in "$DATAPATH"/*/; do
         source ~/anaconda3/etc/profile.d/conda.sh        
         conda activate vid2e
 
-        # rename image lest to imgs an moove folders
+        # rename image left to imgs an moove folders
 
         if [ -d "$image_left_path" ]; then
             echo "--------  Renaming $ORIG_DIR to $SUB_DIR"
@@ -53,7 +53,7 @@ for diff in "$DATAPATH"/*/; do
         if test -f "$full_path$FPS"; then
             echo "-------- fps file exists in $full_path"
         else
-            echo "-------- fps file DO NOT EXISTS in $full_path: CRASHING"
+            echo "-------- fps file DO NOT EXISTS in $full_path"
             echo "$fps_n" > "$full_path$FPS"
         fi
 
