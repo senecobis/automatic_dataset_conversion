@@ -77,18 +77,18 @@ for diff in "$DATAPATH"/*/; do
         
         # if no events or upsampled folder exists, then upsample and generate events
 
-        if [ -d "$upsampled_destination" ] || [ -d "$event_h_dir_new" ]; then
-            echo "-------- No need to upsample $full_path"
-        else
-            python upsampling/upsample.py --input_dir=$full_path --output_dir=$upsampled_destination --num_bisections=2
-            rm -r "$upsampled_destination$DEPTH"
-        fi
+        # if [ -d "$upsampled_destination" ] || [ -d "$event_h_dir_new" ]; then
+        #     echo "-------- No need to upsample $full_path"
+        # else
+        #     python upsampling/upsample.py --input_dir=$full_path --output_dir=$upsampled_destination --num_bisections=2
+        #     rm -r "$upsampled_destination$DEPTH"
+        # fi
 
-        if [ -d "$event_dir" ] || [ -d "$event_h_dir_new" ]; then
-            echo "-------- EVENTS or EVENT folder exists no need to generate events"
-        else
-            python esim_torch/scripts/generate_events.py --input_dir=$upsampled_destination --output_dir=$event_dir --contrast_threshold_neg=0.2 --contrast_threshold_pos=0.2 --refractory_period_ns=0
-        fi
+        # if [ -d "$event_dir" ] || [ -d "$event_h_dir_new" ]; then
+        #     echo "-------- EVENTS or EVENT folder exists no need to generate events"
+        # else
+        #     python esim_torch/scripts/generate_events.py --input_dir=$upsampled_destination --output_dir=$event_dir --contrast_threshold_neg=0.2 --contrast_threshold_pos=0.2 --refractory_period_ns=0
+        # fi
 
         cd /home/pellerito/ev-licious
         conda activate evlicious
@@ -96,13 +96,13 @@ for diff in "$DATAPATH"/*/; do
         echo "-------- Converting EVENTS.h5 folder to single .h5 file"
         python scripts/conversion/convert_to_standard_format.py $event_dir --recursive --divider 1 --height 480 --width 640 --suffix npz --output $event_h_dir_new
 
-        echo "-------- removing $event_dir folder"
-        files=$(shopt -s nullglob dotglob; echo $event_dir/*)
-        if ((${#files})) && [ -d "$event_h_dir_new" ];then
-            rm -r $event_dir
-        else 
-            echo "-------- empty (or does not exist or is a file)"
-        fi
+        # echo "-------- removing $event_dir folder"
+        # files=$(shopt -s nullglob dotglob; echo $event_dir/*)
+        # if ((${#files})) && [ -d "$event_h_dir_new" ];then
+        #     rm -r $event_dir
+        # else 
+        #     echo "-------- empty (or does not exist or is a file)"
+        # fi
 
         echo "-------- Converting to single file and generating timestamps"
         cd /home/pellerito/Automatic_dataset_conversion
@@ -120,12 +120,12 @@ for diff in "$DATAPATH"/*/; do
             fi
         fi
 
-        echo "-------- Removing upsampled folder"
-        if [ -d "$upsampled_destination" ]; then
-            rm -r "$upsampled_destination"
-        else
-            echo "-------- No upsampled folder to remove"
-        fi
+        # echo "-------- Removing upsampled folder"
+        # if [ -d "$upsampled_destination" ]; then
+        #     rm -r "$upsampled_destination"
+        # else
+        #     echo "-------- No upsampled folder to remove"
+        # fi
 
         echo "-------- -------- -------- Finished processing segment $seg at difficulty $diff"
     done

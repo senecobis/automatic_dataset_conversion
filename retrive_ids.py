@@ -107,7 +107,59 @@ def compute_ids(event_file_path, indices_file_path, image_timestamps_file_path, 
     image_index_to_window_end = event.find_index_from_timestamp(image_timestamps)
     image_index_to_window_start = np.clip(image_index_to_window_end - num_events, 0, len(event)-1) 
     np.savetxt(indices_file_path, (image_index_to_window_start, image_index_to_window_end), delimiter=',')
+    print(f"saved in {indices_file_path}")
      
+
+def cut_dataset_by_nearest_timestamp(event_file_path, start_tstamp=None, end_tstamp=None):
+    print(f"Cutting dataset from {start_tstamp} to {end_tstamp}")
+    handle = h5py.File(str(event_file_path), "r+")
+    if not "events" in handle.keys():
+        raise ValueError("events is not a key in the h5 file")
+    else:
+        data_x = handle["events"]["x"][:]
+        data_y = handle["events"]["y"][:]
+        data_t = handle["events"]["t"][:]
+        data_p = handle["events"]["p"][:]
+
+        print("Data shape before cutting", data_x.shape)
+        print("Data shape before cutting", data_y.shape)
+        print("Data shape before cutting", data_t.shape)
+        print("Data shape before cutting", data_p.shape)
+
+        if start_tstamp is not None:
+            start_index = np.argmin((data_t - start_tstamp)**2)
+        else:
+            start_index = 0
+        if end_tstamp is not None:
+            end_index = np.argmin((data_t - end_tstamp)**2)
+        else:
+            end_index = -1
+        
+        new_x = data_x[start_index:end_index]
+        new_y = data_y[start_index:end_index]
+        new_t = data_t[start_index:end_index]
+        new_p = data_p[start_index:end_index]
+
+        print("Data shape after cutting", new_x.shape)
+        print("Data shape after cutting", new_y.shape)
+        print("Data shape after cutting", new_t.shape)
+        print("Data shape after cutting", new_p.shape)
+
+        del handle["events"]["x"]
+        del handle["events"]["y"]
+        del handle["events"]["t"]
+        del handle["events"]["p"]
+
+        print("Delete old data")
+
+        handle.create_dataset("x", data=new_x)
+        handle.create_dataset("y", data=new_y)
+        handle.create_dataset("t", data=new_t)
+        handle.create_dataset("p", data=new_p)
+        
+        print("Data saved")
+        
+    
 
 def process_dataset(dataset, num_events, indices_file_name="indices.txt", timestamp_file_name="timestamps.txt"):
     for segments in tqdm.tqdm(os.scandir(dataset), ncols=50):
@@ -118,7 +170,7 @@ def process_dataset(dataset, num_events, indices_file_name="indices.txt", timest
 
         print(f"Processing ... {event_file_path}")
         if not event_file_path.is_file():
-            print("NO events.h5 file found SKIPPING ID RETRIVEAL...")
+            print("NO events.h5 file found SKIPPING ID RETRIVAL...")
             continue
             
         handle = h5py.File(str(event_file_path), "r+")
